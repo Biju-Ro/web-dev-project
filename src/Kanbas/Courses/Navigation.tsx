@@ -5,7 +5,7 @@ export default function CoursesNavigation() {
       <Link
         id="wd-course-home-link"
         to="/Kanbas/Courses/1234/Home"
-        className="list-group-item active border border-0"
+        className="list-group-item active border border-0 d"
       >
         Home
       </Link>

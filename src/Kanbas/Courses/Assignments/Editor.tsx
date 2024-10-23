@@ -1,9 +1,10 @@
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import * as db from "../../Database";
 
 export default function AssignmentEditor() {
   const { cid, aid } = useParams();
   const assignment = db.assignments.find((a) => a._id === aid);
+  const navigate = useNavigate();
 
   return (
     <div className="container mt-4">
@@ -224,8 +225,20 @@ export default function AssignmentEditor() {
 
       <hr className="mt-5 mb-5" />
       <div className="d-flex justify-content-end">
-        <button className="btn btn-secondary me-2">Cancel</button>
-        <button className="btn btn-danger">Save</button>
+        <button
+          className="btn btn-secondary me-2"
+          onClick={() => navigate(`/kanbas/courses/${cid}/Assignments`)}
+        >
+          Cancel
+        </button>
+        <button
+          className="btn btn-danger"
+          onClick={() => {
+            navigate(`/kanbas/courses/${cid}/Assignments`);
+          }}
+        >
+          Save
+        </button>
       </div>
     </div>
   );

@@ -8,9 +8,6 @@ export default function Labs() {
     <div>
       <h1>Labs</h1>
       <h1>Student: Rohan Biju</h1>
-      <a href="https://github.com/Biju-Ro/kanbas-react-web-app" id="wd-github">
-        Link to my Github Repo
-      </a>
       <TOC />
       <Routes>
         <Route path="/" element={<Navigate to="Lab1" />} />

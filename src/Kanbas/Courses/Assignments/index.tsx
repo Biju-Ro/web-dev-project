@@ -11,8 +11,12 @@ import {
   FaPlusCircle,
   FaSearch,
 } from "react-icons/fa";
+import { useParams } from "react-router";
+import * as db from "../../Database";
 
 export default function Assignments() {
+  const { cid } = useParams();
+  const { assignments } = db;
   return (
     <div id="wd-assignments" className="container mt-5">
       <div className="d-flex mb-4 justify-content-between align-items-center">
@@ -67,38 +71,40 @@ export default function Assignments() {
           </div>
 
           <ul className="wd-assignment-list-item list-group rounded-0">
-            {[
-              "A1 - ENV + HTML",
-              "A2 - CSS + BOOTSTRAP",
-              "A3 - JAVASCRIPT + REACT",
-            ].map((assignment, index) => (
-              <li
-                key={index}
-                className="wd-assignment-list-item list-group-item p-3 ps-1 d-flex align-items-center"
-              >
-                <BsGripVertical className="me-2 fs-3" />
-                <LuFileEdit className="me-2 fs-4 text-success" />
-                <div className="wd-fg-color-gray ps-0 ms-2">
-                  <a
-                    style={{ color: "black", textDecoration: "none" }}
-                    className="fw-bold"
-                    href="#/Kanbas/Courses/1234/Assignments/123"
-                  >
-                    {assignment}
-                  </a>
-                  <br />
-                  <div className="text-muted">
-                    Multiple Modules | Not available until May 6 at 12:00am
+            {assignments
+              .filter((assignment) => assignment.course === cid)
+              .map((assignment) => (
+                <li
+                  key={assignment._id}
+                  className="wd-assignment-list-item list-group-item p-3 ps-1 d-flex align-items-center"
+                >
+                  <BsGripVertical className="me-2 fs-3" />
+                  <LuFileEdit className="me-2 fs-4 text-success" />
+                  <div className="wd-fg-color-gray ps-0 ms-2">
+                    <a
+                      style={{ color: "black", textDecoration: "none" }}
+                      className="fw-bold"
+                      href={`#/Kanbas/Courses/${cid}/Assignments/${assignment._id}`}
+                    >
+                      {assignment._id}
+                    </a>
                     <br />
-                    <b>Due</b> 2024-11-01 12:00 | 75 points
+                    <div className="text-muted">
+                      {assignment.hasMultipleModules
+                        ? "Multiple Modules"
+                        : "Single Module"}
+                      | {assignment.availableFromFormatted}
+                      <br />
+                      <b>Due</b> {assignment.dueDateFormatted} |{" "}
+                      {assignment.points} points
+                    </div>
                   </div>
-                </div>
-                <div className="float-end ms-auto">
-                  <GreenCheckmark />
-                  <IoEllipsisVertical className="fs-4" />
-                </div>
-              </li>
-            ))}
+                  <div className="float-end ms-auto">
+                    <GreenCheckmark />
+                    <IoEllipsisVertical className="fs-4" />
+                  </div>
+                </li>
+              ))}
           </ul>
         </li>
       </ul>

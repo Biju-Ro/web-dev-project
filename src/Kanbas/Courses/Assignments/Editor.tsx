@@ -1,14 +1,25 @@
+import { useParams, Link } from "react-router-dom";
+import * as db from "../../Database";
+
 export default function AssignmentEditor() {
+  const { cid, aid } = useParams();
+  const assignment = db.assignments.find((a) => a._id === aid);
+
   return (
     <div className="container mt-4">
       <h4>Assignment Name</h4>
-      <input className="form-control mb-3" placeholder="Assignment Name" />
+      <input
+        className="form-control mb-3"
+        placeholder="Assignment Name"
+        value={assignment?._id}
+      />
 
       <textarea
         className="form-control mb-3"
         cols={40}
         rows={10}
         placeholder="Description"
+        value={assignment?.description}
       ></textarea>
 
       <div className="row g-3 mb-3">
@@ -23,6 +34,7 @@ export default function AssignmentEditor() {
             className="form-control"
             type="number"
             placeholder="Points"
+            value={assignment?.points}
           />
         </div>
       </div>
@@ -34,8 +46,16 @@ export default function AssignmentEditor() {
           </label>
         </div>
         <div className="col-md-8">
-          <select id="wd-group" className="form-select">
-            <option>ASSIGNMENTS</option>
+          <select
+            id="wd-group"
+            className="form-select"
+            value={assignment?.assignmentGroup}
+          >
+            <option value="Assignments">Assignments</option>
+            <option value="Exams">Exams</option>
+            <option value="Projects">Projects</option>
+            <option value="Quizzes">Quizzes</option>
+            <option value="Reports">Reports</option>
           </select>
         </div>
       </div>
@@ -47,10 +67,14 @@ export default function AssignmentEditor() {
           </label>
         </div>
         <div className="col-md-8">
-          <select id="wd-display-grade-as" className="form-select">
-            <option>Percentage</option>
-            <option>Decimal</option>
-            <option>Percentile</option>
+          <select
+            id="wd-display-grade-as"
+            className="form-select"
+            value={assignment?.displayGradeAs}
+          >
+            <option value="Percentage">Percentage</option>
+            <option value="Decimal">Decimal</option>
+            <option value="Percentile">Percentile</option>
           </select>
         </div>
       </div>
@@ -63,72 +87,91 @@ export default function AssignmentEditor() {
         </div>
         <div className="col-md-8">
           <div className="border rounded p-3">
-            <select id="wd-submission-type" className="form-select mb-2">
-              <option>Online</option>
-              <option>In-Person</option>
+            <select
+              id="wd-submission-type"
+              className="form-select mb-2"
+              value={assignment?.submissionType}
+            >
+              <option value="Online">Online</option>
+              <option value="In-Person">In-Person</option>
             </select>
-            <strong>Online Entry Options</strong>
-            <br />
-            <div className="form-check">
-              <input
-                className="form-check-input"
-                type="checkbox"
-                id="textEntry"
-              />
-              <label className="form-check-label" htmlFor="textEntry">
-                Text Entry
-              </label>
-            </div>
-            <div className="form-check">
-              <input
-                className="form-check-input"
-                type="checkbox"
-                id="websiteUrl"
-              />
-              <label className="form-check-label" htmlFor="websiteUrl">
-                Website URL
-              </label>
-            </div>
-            <div className="form-check">
-              <input
-                className="form-check-input"
-                type="checkbox"
-                id="mediaRecordings"
-              />
-              <label className="form-check-label" htmlFor="mediaRecordings">
-                Media Recordings
-              </label>
-            </div>
-            <div className="form-check">
-              <input
-                className="form-check-input"
-                type="checkbox"
-                id="studentAnnotation"
-              />
-              <label className="form-check-label" htmlFor="studentAnnotation">
-                Student Annotation
-              </label>
-            </div>
-            <div className="form-check">
-              <input
-                className="form-check-input"
-                type="checkbox"
-                id="fileUploads"
-              />
-              <label className="form-check-label" htmlFor="fileUploads">
-                File Uploads
-              </label>
-            </div>
-            <div className="form-check">
-              <input
-                className="form-check-input"
-                type="checkbox"
-                id="restrictUploads"
-              />
-              <label className="form-check-label" htmlFor="restrictUploads">
-                Restrict Upload File Types
-              </label>
-            </div>
+            {assignment?.submissionType === "Online" && (
+              <>
+                <strong>Online Entry Options</strong>
+                <br />
+                <div className="form-check">
+                  <input
+                    className="form-check-input"
+                    type="checkbox"
+                    id="textEntry"
+                    checked={assignment?.onlineEntryOptions?.textEntry}
+                  />
+                  <label className="form-check-label" htmlFor="textEntry">
+                    Text Entry
+                  </label>
+                </div>
+                <div className="form-check">
+                  <input
+                    className="form-check-input"
+                    type="checkbox"
+                    id="websiteUrl"
+                    checked={assignment?.onlineEntryOptions?.websiteUrl}
+                  />
+                  <label className="form-check-label" htmlFor="websiteUrl">
+                    Website URL
+                  </label>
+                </div>
+                <div className="form-check">
+                  <input
+                    className="form-check-input"
+                    type="checkbox"
+                    id="mediaRecordings"
+                    checked={assignment?.onlineEntryOptions?.mediaRecordings}
+                  />
+                  <label className="form-check-label" htmlFor="mediaRecordings">
+                    Media Recordings
+                  </label>
+                </div>
+                <div className="form-check">
+                  <input
+                    className="form-check-input"
+                    type="checkbox"
+                    id="studentAnnotation"
+                    checked={assignment?.onlineEntryOptions?.studentAnnotation}
+                  />
+                  <label
+                    className="form-check-label"
+                    htmlFor="studentAnnotation"
+                  >
+                    Student Annotation
+                  </label>
+                </div>
+                <div className="form-check">
+                  <input
+                    className="form-check-input"
+                    type="checkbox"
+                    id="fileUploads"
+                    checked={assignment?.onlineEntryOptions?.fileUploads}
+                  />
+                  <label className="form-check-label" htmlFor="fileUploads">
+                    File Uploads
+                  </label>
+                </div>
+                <div className="form-check">
+                  <input
+                    className="form-check-input"
+                    type="checkbox"
+                    id="restrictUploads"
+                    checked={
+                      assignment?.onlineEntryOptions?.restrictUploadFileTypes
+                    }
+                  />
+                  <label className="form-check-label" htmlFor="restrictUploads">
+                    Restrict Upload File Types
+                  </label>
+                </div>
+              </>
+            )}
           </div>
         </div>
       </div>
@@ -147,25 +190,38 @@ export default function AssignmentEditor() {
               className="form-control mb-2"
               type="text"
               placeholder="Choose"
-              value="Everyone"
+              value={assignment?.assignTo}
             />
 
             <strong>Due</strong>
-            <input className="form-control mb-3" type="date" />
+            <input
+              className="form-control mb-3"
+              type="date"
+              value={assignment?.dueDate?.split(" ")[0]}
+            />
 
             <div className="row">
               <div className="col">
                 <strong>Available from</strong>
-                <input className="form-control mb-2" type="date" />
+                <input
+                  className="form-control mb-2"
+                  type="date"
+                  value={assignment?.availableFrom?.split(" ")[0]}
+                />
               </div>
               <div className="col">
                 <strong>Until</strong>
-                <input className="form-control mb-2" type="date" />
+                <input
+                  className="form-control mb-2"
+                  type="date"
+                  value={assignment?.until}
+                />
               </div>
             </div>
           </div>
         </div>
       </div>
+
       <hr className="mt-5 mb-5" />
       <div className="d-flex justify-content-end">
         <button className="btn btn-secondary me-2">Cancel</button>

@@ -1,107 +1,122 @@
+import { FaPlus } from "react-icons/fa";
+import { CiSearch } from "react-icons/ci";
 import { BsGripVertical } from "react-icons/bs";
-import { LuFileEdit } from "react-icons/lu";
-import LessonControlButtons from "../Modules/LessonControlButtons";
-import ModuleControlButtons from "../Modules/ ModuleControlButtons";
-import GreenCheckmark from "../Modules/GreenCheckmark";
-import { IoEllipsisVertical } from "react-icons/io5";
-import { FaPlus } from "react-icons/fa6";
-import {
-  FaCheckCircle,
-  FaEllipsisV,
-  FaPlusCircle,
-  FaSearch,
-} from "react-icons/fa";
-import { useParams } from "react-router";
-import * as db from "../../Database";
+import LessonControlButtons from "./LessonControlButtons";
+import AssignmentTitleControlButtons from "./AssignmentTitleControlButtons";
+import { MdOutlineArrowDropDown } from "react-icons/md";
+import { GiNotebook } from "react-icons/gi";
+
+import { useParams, useNavigate } from "react-router";
+import { Link } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { deleteAssignment } from "./reducer";
+import ProtectedContent from "../../Account/ProtectedContent";
 
 export default function Assignments() {
   const { cid } = useParams();
-  const { assignments } = db;
+  const { assignments } = useSelector((state: any) => state.assignmentsReducer);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { currentUser } = useSelector((state: any) => state.accountReducer);
+
+  const handleDeleteAssignment = (assignmentId: string) => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this assignment?"
+    );
+    if (confirmDelete) {
+      dispatch(deleteAssignment(assignmentId));
+    }
+  };
+
   return (
-    <div id="wd-assignments" className="container mt-5">
-      <div className="d-flex mb-4 justify-content-between align-items-center">
-        <div className="input-group me-3" style={{ width: "250px" }}>
-          <span className="input-group-text hi">
-            <FaSearch />
-          </span>
-          <input type="text" className="form-control" placeholder="Search..." />
+    <div id="wd-assignments-controls" className="p-3">
+      <div className="search-and-buttons-container mb-4 d-flex justify-content-between">
+        <div className="search-container d-flex align-items-center">
+          <CiSearch className="search-icon me-2" />
+          <input
+            type="text"
+            className="search-input form-control"
+            placeholder="Search..."
+          />
         </div>
-        <div>
-          <button
-            id="wd-add-module-btn"
-            className="btn btn-lg btn-secondary me-2"
-          >
-            <FaPlus
-              className="position-relative me-2"
-              style={{ bottom: "1px" }}
-            />
-            Group
-          </button>
-          <button id="wd-add-module-btn" className="btn btn-lg btn-danger">
-            <FaPlus
-              className="position-relative me-2"
-              style={{ bottom: "1px" }}
-            />
-            Assignment
-          </button>
-        </div>
+        <ProtectedContent>
+          <div className="button-group">
+            <button
+              id="wd-add-group-btn"
+              className="btn btn-lg btn-secondary me-1"
+            >
+              <FaPlus
+                className="position-relative me-1"
+                style={{ bottom: "1px" }}
+              />
+              Group
+            </button>
+            <button
+              id="wd-add-assignment-btn"
+              className="btn btn-lg btn-danger me-1"
+              onClick={() => navigate(`/Kanbas/Courses/${cid}/Assignments/new`)}
+            >
+              <FaPlus
+                className="position-relative me-1"
+                style={{ bottom: "1px" }}
+              />
+              Assignment
+            </button>
+          </div>
+        </ProtectedContent>
       </div>
 
-      <ul className="list-group">
-        <li className="wd-module list-group-item p-0 mb-4 fs-5 border-gray">
-          <div className="wd-title p-3 ps-2 bg-secondary d-flex justify-content-between align-items-center">
-            <div className="d-flex align-items-center">
+      <ul id="wd-assignments" className="list-group rounded-0">
+        <li className="wd-assignment list-group-item p-0 mb-5 fs-5 border-gray">
+          <div className="wd-assignments-title p-3 ps-2 bg-secondary d-flex justify-content-between align-items-center">
+            <div className="d-flex align-items-center fw-bold">
               <BsGripVertical className="me-2 fs-3" />
-              <span>ASSIGNMENTS</span>
+              <MdOutlineArrowDropDown className="me-2 fs-3" />
+              ASSIGNMENTS
             </div>
-            <span>
-              <label
-                className="form-label pe-2 ps-2 me-3"
-                style={{
-                  borderRadius: "50px",
-                  borderWidth: "1px",
-                  borderStyle: "solid",
-                }}
-              >
-                40% of Total
-              </label>
-              <FaPlus className="fs-4" />
-              <IoEllipsisVertical className="fs-4" />
-            </span>
+            <ProtectedContent>
+              <AssignmentTitleControlButtons />
+            </ProtectedContent>
           </div>
 
-          <ul className="wd-assignment-list-item list-group rounded-0">
+          <ul className="wd-assignment-list list-group rounded-0">
             {assignments
-              .filter((assignment) => assignment.course === cid)
-              .map((assignment) => (
-                <li
-                  key={assignment._id}
-                  className="wd-assignment-list-item list-group-item p-3 ps-1 d-flex align-items-center"
-                >
-                  <BsGripVertical className="me-2 fs-3" />
-                  <LuFileEdit className="me-2 fs-4 text-success" />
-                  <div className="wd-fg-color-gray ps-0 ms-2">
-                    <a
-                      style={{ color: "black", textDecoration: "none" }}
-                      className="fw-bold"
-                      href={`#/Kanbas/Courses/${cid}/Assignments/${assignment._id}`}
-                    >
-                      {assignment._id}
-                    </a>
-                    <br />
-                    <div className="text-muted">
-                      {assignment.hasMultipleModules
-                        ? "Multiple Modules"
-                        : "Single Module"}
-                      | {assignment.availableFromFormatted}
+              .filter((assignment: any) => assignment.course === cid)
+              .map((assignment: any) => (
+                <li className="wd-assignment-list-item list-group-item p-3 ps-1">
+                  <div className="d-flex align-items-center">
+                    <BsGripVertical className="me-3 fs-3" />
+                    <GiNotebook
+                      className="me-3 fs-3"
+                      style={{ color: "green" }}
+                    />
+                    <div className="flex-grow-1">
+                      {currentUser.role === "FACULTY" ? (
+                        <Link
+                          to={`/Kanbas/Courses/${cid}/Assignments/${assignment._id}`}
+                        >
+                          {assignment.title}
+                        </Link>
+                      ) : (
+                        <strong>{assignment.title}</strong>
+                      )}
                       <br />
-                      <b>Due</b> {assignment.dueDateFormatted} |{" "}
-                      {assignment.points} points
+                      <span className="red-text">Multiple Modules</span> |{" "}
+                      <span className="bold-darkgray-text">
+                        Not available until
+                      </span>{" "}
+                      {assignment.available} |<br />
+                      <span className="bold-darkgray-text">Due</span>{" "}
+                      {assignment.due} | {assignment.points} pts
                     </div>
-                  </div>
-                  <div className="float-end ms-auto">
-                    <GreenCheckmark />
-                    <IoEllipsisVertical className="fs-4" />
+                    <ProtectedContent>
+                      <LessonControlButtons
+                        assignmentId={assignment._id}
+                        deleteAssignment={() =>
+                          handleDeleteAssignment(assignment._id)
+                        }
+                      />
+                    </ProtectedContent>
                   </div>
                 </li>
               ))}

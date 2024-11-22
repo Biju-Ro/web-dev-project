@@ -19,7 +19,7 @@ const assignmentsSlice = createSlice({
           course: assignment.course,
           title: assignment.title,
           description: assignment.description || "",
-          points: assignment.points || 100,
+          points: assignment.points || 101,
           dueDate: assignment.dueDate || "2024-05-13T23:59",
           availableFrom: assignment.availableFrom || "2024-05-06T23:59",
           availableUntil: assignment.availableUntil || "2024-05-20T23:59",

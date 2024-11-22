@@ -2,7 +2,7 @@ import { FaTrash } from "react-icons/fa";
 import { FaPencil } from "react-icons/fa6";
 import { IoEllipsisVertical } from "react-icons/io5";
 import GreenCheckmark from "./GreenCheckmark";
-import { BsPlus } from "react-icons/bs";
+import Plusmark from "./Plussign";
 export default function ModuleControlButtons({
   moduleId,
   deleteModule,
@@ -16,14 +16,14 @@ export default function ModuleControlButtons({
     <div className="float-end">
       <FaPencil
         onClick={() => editModule(moduleId)}
-        className="text-primary me-3"
+        className="text-primary me-3 fs-5 cursor-pointer icon-hover"
       />
       <FaTrash
-        className="text-danger me-2 mb-1"
         onClick={() => deleteModule(moduleId)}
+        className="text-danger me-3 fs-5 cursor-pointer icon-hover"
       />
       <GreenCheckmark />
-      <BsPlus className="fs-4 me-2" />
+      <Plusmark />
       <IoEllipsisVertical className="fs-4" />
     </div>
   );

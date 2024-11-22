@@ -1,128 +1,168 @@
-import { FaPlus } from "react-icons/fa";
-import { CiSearch } from "react-icons/ci";
 import { BsGripVertical } from "react-icons/bs";
-import LessonControlButtons from "./LessonControlButtons";
-import AssignmentTitleControlButtons from "./AssignmentTitleControlButtons";
-import { MdOutlineArrowDropDown } from "react-icons/md";
-import { GiNotebook } from "react-icons/gi";
+import { PiNotePencilBold } from "react-icons/pi";
+import { useNavigate, useParams } from "react-router";
+import { useEffect, useState } from "react";
 
-import { useParams, useNavigate } from "react-router";
-import { Link } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
-import { deleteAssignment } from "./reducer";
-import ProtectedContent from "../../Account/ProtectedContent";
+import { FaTrash } from "react-icons/fa";
+import * as coursesClient from "../client";
+import * as assignmentsClient from "./client";
 
-export default function Assignments() {
+import { useDispatch, useSelector } from "react-redux";
+import AssignmentsControls from "./AssignmentsControls";
+import { deleteAssignment, setAssignments } from "./Reducer";
+import AssignmentsHeaderButtons from "./AssignmentsHeaderButtons";
+
+function Assignments() {
   const { cid } = useParams();
-  const { assignments } = useSelector((state: any) => state.assignmentsReducer);
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const { assignments } = useSelector((state: any) => state.assignments);
   const { currentUser } = useSelector((state: any) => state.accountReducer);
 
-  const handleDeleteAssignment = (assignmentId: string) => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this assignment?"
+  console.log("cid:", cid);
+
+  const isFaculty = currentUser?.role === "FACULTY";
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const [showDialog, setShowDialog] = useState(false);
+  const [selectedAssignment, setSelectedAssignment] = useState<any>(null);
+
+  const fetchAssignments = async () => {
+    const assignments = await coursesClient.findAssignmentsForCourse(
+      cid as string
     );
-    if (confirmDelete) {
-      dispatch(deleteAssignment(assignmentId));
+    dispatch(setAssignments(assignments));
+  };
+  useEffect(() => {
+    fetchAssignments();
+  }, []);
+
+  const removeAssignment = async (aid: string) => {
+    await assignmentsClient.deleteAssignment(aid);
+    dispatch(deleteAssignment(aid));
+  };
+
+  const handleDeleteClick = (assignment: any) => {
+    setSelectedAssignment(assignment);
+    setShowDialog(true);
+  };
+
+  const confirmDelete = () => {
+    if (selectedAssignment) {
+      removeAssignment(selectedAssignment._id);
     }
+    setShowDialog(false);
+    setSelectedAssignment(null);
+  };
+
+  const cancelDelete = () => {
+    setShowDialog(false);
+    setSelectedAssignment(null);
   };
 
   return (
-    <div id="wd-assignments-controls" className="p-3">
-      <div className="search-and-buttons-container mb-4 d-flex justify-content-between">
-        <div className="search-container d-flex align-items-center">
-          <CiSearch className="search-icon me-2" />
-          <input
-            type="text"
-            className="search-input form-control"
-            placeholder="Search..."
-          />
-        </div>
-        <ProtectedContent>
-          <div className="button-group">
-            <button
-              id="wd-add-group-btn"
-              className="btn btn-lg btn-secondary me-1"
-            >
-              <FaPlus
-                className="position-relative me-1"
-                style={{ bottom: "1px" }}
-              />
-              Group
-            </button>
-            <button
-              id="wd-add-assignment-btn"
-              className="btn btn-lg btn-danger me-1"
-              onClick={() => navigate(`/Kanbas/Courses/${cid}/Assignments/new`)}
-            >
-              <FaPlus
-                className="position-relative me-1"
-                style={{ bottom: "1px" }}
-              />
-              Assignment
-            </button>
-          </div>
-        </ProtectedContent>
-      </div>
-
-      <ul id="wd-assignments" className="list-group rounded-0">
-        <li className="wd-assignment list-group-item p-0 mb-5 fs-5 border-gray">
-          <div className="wd-assignments-title p-3 ps-2 bg-secondary d-flex justify-content-between align-items-center">
-            <div className="d-flex align-items-center fw-bold">
-              <BsGripVertical className="me-2 fs-3" />
-              <MdOutlineArrowDropDown className="me-2 fs-3" />
-              ASSIGNMENTS
+    <div id="wd-assignments">
+      <AssignmentsControls />
+      <hr />
+      <br />
+      <div className="wd-assignments-list">
+        <ul id="wd-assignments-list" className="list-group rounded-0">
+          <li className="wd-assignment list-group-item p-0 mb-5 fs-5 border-gray">
+            <div className="wd-title p-3 ps-2 bg-light d-flex justify-content-between align-items-center">
+              <div>
+                <BsGripVertical className="wd-assignments-title me-2 fs-3" />
+                ASSIGNMENTS
+              </div>
+              <AssignmentsHeaderButtons />
             </div>
-            <ProtectedContent>
-              <AssignmentTitleControlButtons />
-            </ProtectedContent>
-          </div>
 
-          <ul className="wd-assignment-list list-group rounded-0">
-            {assignments
-              .filter((assignment: any) => assignment.course === cid)
-              .map((assignment: any) => (
-                <li className="wd-assignment-list-item list-group-item p-3 ps-1">
-                  <div className="d-flex align-items-center">
-                    <BsGripVertical className="me-3 fs-3" />
-                    <GiNotebook
-                      className="me-3 fs-3"
-                      style={{ color: "green" }}
-                    />
-                    <div className="flex-grow-1">
-                      {currentUser.role === "FACULTY" ? (
-                        <Link
-                          to={`/Kanbas/Courses/${cid}/Assignments/${assignment._id}`}
-                        >
-                          {assignment.title}
-                        </Link>
-                      ) : (
-                        <strong>{assignment.title}</strong>
-                      )}
+            <ul className="wd-lesson list-group rounded-0">
+              {assignments.map((assignment: any) => (
+                <li className="wd-assignment-list-item list-group-item p-3 ps-1 d-flex justify-content-between align-items-center">
+                  <div className="d-flex align-items-start flex-grow-1 align-items-center">
+                    <BsGripVertical className="me-2 fs-3" />
+
+                    <a
+                      href={`#/Kanbas/Courses/${cid}/Assignments/${assignment._id}`}
+                      className="text-dark text-decoration-none"
+                    >
+                      <PiNotePencilBold className="me-3 fs-3" />
+                    </a>
+
+                    <div>
+                      <a
+                        className="wd-assignment-link text-dark fw-bold fs-5 text-decoration-none"
+                        href={`#/Kanbas/Courses/${cid}/Assignments/${assignment._id}`}
+                      >
+                        {assignment.title}
+                      </a>
                       <br />
-                      <span className="red-text">Multiple Modules</span> |{" "}
-                      <span className="bold-darkgray-text">
-                        Not available until
-                      </span>{" "}
-                      {assignment.available} |<br />
-                      <span className="bold-darkgray-text">Due</span>{" "}
-                      {assignment.due} | {assignment.points} pts
+                      <div className="text-muted small mt-1">
+                        <span className="text-danger">Multiple Modules</span> |
+                        <span>
+                          <b> Available until:</b> {assignment.availableUntil}
+                        </span>
+                        <br />
+                        <b>Due:</b> {assignment.dueDate} |
+                        <span> {assignment.points} pts</span>
+                      </div>
                     </div>
-                    <ProtectedContent>
-                      <LessonControlButtons
-                        assignmentId={assignment._id}
-                        deleteAssignment={() =>
-                          handleDeleteAssignment(assignment._id)
-                        }
-                      />
-                    </ProtectedContent>
                   </div>
+
+                  {isFaculty && (
+                    <button
+                      className="btn btn-sm btn-danger d-flex align-items-center justify-content-center m-0 me-1"
+                      onClick={() => handleDeleteClick(assignment)}
+                      title="Delete Assignment"
+                    >
+                      <FaTrash className="me-1" />
+                      Delete
+                    </button>
+                  )}
                 </li>
               ))}
-          </ul>
-        </li>
-      </ul>
+            </ul>
+          </li>
+        </ul>
+        {showDialog && (
+          <div className="modal show d-block" tabIndex={-1}>
+            <div className="modal-dialog">
+              <div className="modal-content">
+                <div className="modal-header">
+                  <h5 className="modal-title">Confirm Delete</h5>
+                  <button
+                    type="button"
+                    className="btn-close"
+                    aria-label="Close"
+                    onClick={cancelDelete}
+                  />
+                </div>
+
+                <div className="modal-body">
+                  <p>Are you sure you want to delete this assignment?</p>
+                </div>
+
+                <div className="modal-footer">
+                  <button
+                    type="button"
+                    className="btn btn-secondary"
+                    onClick={cancelDelete}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-danger"
+                    onClick={confirmDelete}
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
+export default Assignments;

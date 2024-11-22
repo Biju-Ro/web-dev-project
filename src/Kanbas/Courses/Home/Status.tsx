@@ -2,46 +2,63 @@ import { MdDoNotDisturbAlt } from "react-icons/md";
 import { FaCheckCircle } from "react-icons/fa";
 import { BiImport } from "react-icons/bi";
 import { LiaFileImportSolid } from "react-icons/lia";
-import { FaHome } from "react-icons/fa";
-import { FaBullhorn } from "react-icons/fa";
-import { FaChartLine } from "react-icons/fa";
-import { FaBell } from "react-icons/fa";
+import { TiHome } from "react-icons/ti";
+import { SiGoogleanalytics } from "react-icons/si";
+import { TfiAnnouncement } from "react-icons/tfi";
+import { IoIosNotifications } from "react-icons/io";
+import { useSelector } from "react-redux";
 
 export default function CourseStatus() {
+  const { currentUser } = useSelector((state: any) => state.accountReducer);
+  const isFaculty = currentUser?.role === "FACULTY";
   return (
     <div id="wd-course-status" style={{ width: "300px" }}>
-      <h2>Course Status</h2>
-      <div className="d-flex">
-        <div className="w-50 pe-1">
-          <button className="btn btn-lg btn-secondary w-100 text-nowrap ">
-            <MdDoNotDisturbAlt className="me-2 fs-5" /> Unpublish{" "}
+      {isFaculty &&(
+      <h2>Course Status</h2>)}
+      <div className="d-flex flex-column">
+      {isFaculty &&(
+        <div className="d-flex mb-2">
+          <button className="btn btn-lg btn-secondary w-50 me-1 text-nowrap ">
+            <MdDoNotDisturbAlt className="me-2 fs-5" /> Unpublish 
           </button>
-        </div>
-        <div className="w-50">
-          <button className="btn btn-lg btn-success w-100">
-            <FaCheckCircle className="me-2 fs-5" /> Publish{" "}
+      
+          <button className="btn btn-lg btn-success w-50">
+            <FaCheckCircle className="me-2 fs-5" /> Publish 
           </button>
-        </div>
-      </div>
+        </div>)} 
       <br />
-      <button className="btn btn-lg btn-secondary w-100 mt-1 text-start">
-        <BiImport className="me-2 fs-5" /> Import Existing Content{" "}
-      </button>
-      <button className="btn btn-lg btn-secondary w-100 mt-1 text-start">
-        <LiaFileImportSolid className="me-2 fs-5" /> Import from Commons{" "}
-      </button>
-      <button className="btn btn-lg btn-secondary w-100 mt-1 text-start">
-        <FaHome className="me-2 fs-5" /> Choose Home Page{" "}
-      </button>
-      <button className="btn btn-lg btn-secondary w-100 mt-1 text-start">
-        <FaBullhorn className="me-2 fs-5" /> New Announcement{" "}
-      </button>
-      <button className="btn btn-lg btn-secondary w-100 mt-1 text-start">
-        <FaChartLine className="me-2 fs-5" /> New Analytics{" "}
-      </button>
-      <button className="btn btn-lg btn-secondary w-100 mt-1 text-start">
-        <FaBell className="me-2 fs-5" /> View Course Notifications{" "}
-      </button>
+      {isFaculty &&(
+        <div>
+          <button className="btn btn-lg btn-secondary w-100 mt-1 text-start">
+            <BiImport className="me-2 fs-5" /> 
+              Import Existing Content 
+          </button>
+            
+          <button className="btn btn-lg btn-secondary w-100 mt-1 text-start">
+            <LiaFileImportSolid className="me-2 fs-5" /> 
+              Import from Commons 
+          </button>
+
+          <button className="btn btn-lg btn-secondary w-100 mt-1 text-start">
+            <TiHome className="me-2 fs-5" /> Choose Home Page 
+          </button>
+        </div>)}
+
+        <button className="btn btn-lg btn-secondary w-100 mt-1 text-start">
+          <SiGoogleanalytics className="me-2 fs-5" /> View Course Stream 
+        </button>
+
+        <button className="btn btn-lg btn-secondary w-100 mt-1 text-start">
+          <TfiAnnouncement className="me-2 fs-5" /> New Announcement 
+        </button>
+
+        <button className="btn btn-lg btn-secondary w-100 mt-1 text-start">
+          <SiGoogleanalytics className="me-2 fs-5" /> New Analytics 
+        </button>
+
+        <button className="btn btn-lg btn-secondary w-100 mt-1 text-start">
+          <IoIosNotifications className="me-2 fs-5" /> View Course Notifications 
+        </button>
+      </div>
     </div>
-  );
-}
+);}

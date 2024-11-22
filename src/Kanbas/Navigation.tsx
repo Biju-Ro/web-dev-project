@@ -1,8 +1,11 @@
 import { AiOutlineDashboard } from "react-icons/ai";
 import { IoCalendarOutline } from "react-icons/io5";
+import { FaRegCalendarAlt } from "react-icons/fa";
+import { PiGear } from "react-icons/pi";
 import { LiaBookSolid, LiaCogSolid } from "react-icons/lia";
 import { FaInbox, FaRegCircleUser } from "react-icons/fa6";
 import { Link, useLocation } from "react-router-dom";
+
 export default function KanbasNavigation() {
   const { pathname } = useLocation();
   const links = [
@@ -12,6 +15,7 @@ export default function KanbasNavigation() {
     { label: "Inbox", path: "/Kanbas/Inbox", icon: FaInbox },
     { label: "Labs", path: "/Labs", icon: LiaCogSolid },
   ];
+
   return (
     <div
       id="wd-kanbas-navigation"
@@ -24,7 +28,7 @@ export default function KanbasNavigation() {
         href="https://www.northeastern.edu/"
         className="list-group-item bg-black border-0 text-center"
       >
-        <img src="/global-logo.png" width="75px" />
+        <img src="global-logo.png" width="75px" />
       </a>
       <Link
         to="/Kanbas/Account"

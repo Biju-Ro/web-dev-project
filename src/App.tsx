@@ -3,9 +3,10 @@ import "./App.css";
 import { HashRouter, Route, Routes, Navigate } from "react-router-dom";
 import Labs from "./Labs";
 import List1 from "./List1";
-import store from "./Kanbas/store";
+
 import { Provider } from "react-redux";
 import Kanbas from "./Kanbas";
+import store from "./Kanbas/store";
 
 function App() {
   return (

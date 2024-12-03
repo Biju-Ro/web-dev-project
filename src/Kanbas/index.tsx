@@ -12,6 +12,7 @@ import ProtectedRouteCourse from "./Courses/ProtectedRouteCourse";
 import Session from "./Account/Session";
 import * as userClient from "./Account/client";
 import * as courseClient from "./Courses/client";
+
 export default function Kanbas() {
   const [courses, setCourses] = useState<any[]>([]);
   const { currentUser } = useSelector((state: any) => state.accountReducer);
@@ -57,7 +58,7 @@ export default function Kanbas() {
   }, [currentUser, enrolling]);
 
   const initialCourse = {
-    _id: "0",
+    _id: "1",
     name: "New Course",
     number: "New Number",
     startDate: "2023-09-10",
@@ -71,14 +72,10 @@ export default function Kanbas() {
     const newCourse = await courseClient.createCourse(course);
     setCourses([...courses, newCourse]);
     findCoursesForUser();
-    // await fetchCourses();
-    // await fetchEnrollments();
   };
   const deleteCourse = async (courseId: string) => {
     const status = await courseClient.deleteCourse(courseId);
     setCourses(courses.filter((course) => course._id !== courseId));
-    //await fetchCourses();
-    //await fetchEnrollments();
   };
   const updateCourse = async () => {
     await courseClient.updateCourse(course);
@@ -92,7 +89,6 @@ export default function Kanbas() {
       })
     );
     setCourse(initialCourse);
-    // await fetchCourses();
   };
   const updateEnrollment = async (courseId: string, enrolled: boolean) => {
     if (enrolled) {
@@ -100,7 +96,7 @@ export default function Kanbas() {
     } else {
       await userClient.unenrollFromCourse(currentUser._id, courseId);
     }
-    //fetchEnrollments();
+
     setCourses(
       courses.map((course) => {
         if (course._id === courseId) {

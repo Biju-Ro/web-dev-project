@@ -1,64 +1,66 @@
-import { MdDoNotDisturbAlt } from "react-icons/md";
-import { FaCheckCircle } from "react-icons/fa";
-import { BiImport } from "react-icons/bi";
+import { FaCheckCircle, FaBan } from "react-icons/fa";
+import { LuImport } from "react-icons/lu";
 import { LiaFileImportSolid } from "react-icons/lia";
-import { TiHome } from "react-icons/ti";
-import { SiGoogleanalytics } from "react-icons/si";
+import {
+  IoHomeOutline,
+  IoBarChartOutline,
+  IoNotificationsOutline,
+} from "react-icons/io5";
+import { BsWindowFullscreen } from "react-icons/bs";
 import { TfiAnnouncement } from "react-icons/tfi";
-import { IoIosNotifications } from "react-icons/io";
-import { useSelector } from "react-redux";
+import ProtectedRouteRole from "../ProtectedRouteRole";
 
 export default function CourseStatus() {
-  const { currentUser } = useSelector((state: any) => state.accountReducer);
-  const isFaculty = currentUser?.role === "FACULTY";
   return (
-    <div id="wd-course-status" style={{ width: "300px" }}>
-      {isFaculty &&(
-      <h2>Course Status</h2>)}
-      <div className="d-flex flex-column">
-      {isFaculty &&(
-        <div className="d-flex mb-2">
-          <button className="btn btn-lg btn-secondary w-50 me-1 text-nowrap ">
-            <MdDoNotDisturbAlt className="me-2 fs-5" /> Unpublish 
-          </button>
-      
-          <button className="btn btn-lg btn-success w-50">
-            <FaCheckCircle className="me-2 fs-5" /> Publish 
-          </button>
-        </div>)} 
-      <br />
-      {isFaculty &&(
-        <div>
-          <button className="btn btn-lg btn-secondary w-100 mt-1 text-start">
-            <BiImport className="me-2 fs-5" /> 
-              Import Existing Content 
-          </button>
-            
-          <button className="btn btn-lg btn-secondary w-100 mt-1 text-start">
-            <LiaFileImportSolid className="me-2 fs-5" /> 
-              Import from Commons 
-          </button>
-
-          <button className="btn btn-lg btn-secondary w-100 mt-1 text-start">
-            <TiHome className="me-2 fs-5" /> Choose Home Page 
-          </button>
-        </div>)}
+    <div id="wd-course-status" style={{ width: "300px", marginLeft: 40 }}>
+      <h2>Course Status</h2>
+      <ProtectedRouteRole>
+        <div className="d-flex mb-3">
+          <div className="w-50 pe-1">
+            <button className="btn btn-lg btn-secondary w-100 text-nowrap">
+              <FaBan className="me-2 fs-5 mb-1" />
+              Unpublish
+            </button>
+          </div>
+          <div className="w-50">
+            <button className="btn btn-lg btn-success w-100">
+              <FaCheckCircle className="me-2 fs-5 mb-1" />
+              Publish
+            </button>
+          </div>
+        </div>
 
         <button className="btn btn-lg btn-secondary w-100 mt-1 text-start">
-          <SiGoogleanalytics className="me-2 fs-5" /> View Course Stream 
+          <LuImport className="me-2 fs-5" />
+          Import Existing Content
         </button>
-
         <button className="btn btn-lg btn-secondary w-100 mt-1 text-start">
-          <TfiAnnouncement className="me-2 fs-5" /> New Announcement 
+          <LiaFileImportSolid className="me-2 fs-5" />
+          Import from Commons
         </button>
-
         <button className="btn btn-lg btn-secondary w-100 mt-1 text-start">
-          <SiGoogleanalytics className="me-2 fs-5" /> New Analytics 
+          <IoHomeOutline className="me-2 fs-5" />
+          Choose Home Page
         </button>
-
+      </ProtectedRouteRole>
+      <button className="btn btn-lg btn-secondary w-100 mt-1 text-start">
+        <BsWindowFullscreen className="me-2 fs-5" />
+        View Course Stream
+      </button>
+      <ProtectedRouteRole>
         <button className="btn btn-lg btn-secondary w-100 mt-1 text-start">
-          <IoIosNotifications className="me-2 fs-5" /> View Course Notifications 
+          <TfiAnnouncement className="me-2 fs-5" />
+          New Announcement
         </button>
-      </div>
+        <button className="btn btn-lg btn-secondary w-100 mt-1 text-start">
+          <IoBarChartOutline className=" me-2 fs-5" />
+          New Analytics
+        </button>
+      </ProtectedRouteRole>
+      <button className="btn btn-lg btn-secondary w-100 mt-1 text-start">
+        <IoNotificationsOutline className="me-2 fs-5" />
+        View Course Notifications
+      </button>
     </div>
-);}
+  );
+}

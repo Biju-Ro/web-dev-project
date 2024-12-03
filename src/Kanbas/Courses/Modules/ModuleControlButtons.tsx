@@ -1,9 +1,11 @@
-import { FaTrash } from "react-icons/fa";
-import { FaPencil } from "react-icons/fa6";
 import { IoEllipsisVertical } from "react-icons/io5";
-import GreenCheckmark from "./GreenCheckmark";
-import Plusmark from "./Plussign";
-export default function ModuleControlButtons({
+import { BsPlus } from "react-icons/bs";
+import { FaCheckCircle, FaTrash } from "react-icons/fa";
+import { FaPencil } from "react-icons/fa6";
+import { useSelector } from "react-redux";
+import ProtectedRouteRole from "../ProtectedRouteRole";
+
+export default function LessonControlButtons({
   moduleId,
   deleteModule,
   editModule,
@@ -12,18 +14,33 @@ export default function ModuleControlButtons({
   deleteModule: (moduleId: string) => void;
   editModule: (moduleId: string) => void;
 }) {
+  const { currentUser } = useSelector((state: any) => state.accountReducer);
+
   return (
     <div className="float-end">
-      <FaPencil
-        onClick={() => editModule(moduleId)}
-        className="text-primary me-3 fs-5 cursor-pointer icon-hover"
+      {(currentUser.role === "FACULTY" || currentUser.role === "ADMIN") && (
+        <span>
+          <FaPencil
+            onClick={() => editModule(moduleId)}
+            className="text-primary me-3"
+          />
+          <FaTrash
+            className="text-danger position-relative me-3 fs-6"
+            onClick={() => deleteModule(moduleId)}
+          />
+        </span>
+      )}
+      <FaCheckCircle
+        className="position-relative me-2 fs-5"
+        style={{
+          color: "green",
+          backgroundColor: "white",
+          borderRadius: "50%",
+        }}
       />
-      <FaTrash
-        onClick={() => deleteModule(moduleId)}
-        className="text-danger me-3 fs-5 cursor-pointer icon-hover"
-      />
-      <GreenCheckmark />
-      <Plusmark />
+      <ProtectedRouteRole>
+        <BsPlus className="fs-3" />
+      </ProtectedRouteRole>
       <IoEllipsisVertical className="fs-4" />
     </div>
   );

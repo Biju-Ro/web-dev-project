@@ -1,37 +1,38 @@
-import { AiOutlineDashboard } from "react-icons/ai";
+import { AiOutlineDashboard, AiOutlineInbox } from "react-icons/ai";
 import { IoCalendarOutline } from "react-icons/io5";
-import { FaRegCalendarAlt } from "react-icons/fa";
-import { PiGear } from "react-icons/pi";
 import { LiaBookSolid, LiaCogSolid } from "react-icons/lia";
-import { FaInbox, FaRegCircleUser } from "react-icons/fa6";
+import { FaRegCircleUser } from "react-icons/fa6";
 import { Link, useLocation } from "react-router-dom";
 
 export default function KanbasNavigation() {
   const { pathname } = useLocation();
-  const links = [
+  const names = [
     { label: "Dashboard", path: "/Kanbas/Dashboard", icon: AiOutlineDashboard },
     { label: "Courses", path: "/Kanbas/Dashboard", icon: LiaBookSolid },
     { label: "Calendar", path: "/Kanbas/Calendar", icon: IoCalendarOutline },
-    { label: "Inbox", path: "/Kanbas/Inbox", icon: FaInbox },
-    { label: "Labs", path: "/Labs", icon: LiaCogSolid },
+    { label: "Inbox", path: "/Kanbas/Inbox", icon: AiOutlineInbox },
+    { label: "Labs", path: "/Labs/Lab1", icon: LiaCogSolid },
   ];
 
   return (
     <div
       id="wd-kanbas-navigation"
-      style={{ width: 120 }}
-      className="list-group rounded-0 position-fixed bottom-0 top-0 d-none d-md-block bg-black z-2"
+      style={{ width: 110 }}
+      className="list-group rounded-0 position-fixed
+        bottom-0 top-0 d-none d-md-block bg-black z-2"
     >
       <a
-        id="wd-neu-link"
-        target="_blank"
         href="https://www.northeastern.edu/"
+        id="wd-neu-link"
         className="list-group-item bg-black border-0 text-center"
+        target="_blank"
+        rel="noreferrer"
       >
-        <img src="global-logo.png" width="75px" />
+        <img src="/global-logo.png" width="75px" />
       </a>
       <Link
-        to="/Kanbas/Account"
+        to="/Kanbas/Account/"
+        id="wd-account-link"
         className={`list-group-item text-center border-0 bg-black
             ${
               pathname.includes("Account")
@@ -44,12 +45,12 @@ export default function KanbasNavigation() {
             pathname.includes("Account") ? "text-danger" : "text-white"
           }`}
         />
-        <br />
-        Account
+        <div>Account</div>
       </Link>
-      {links.map((link) => (
+
+      {names.map((link, index) => (
         <Link
-          key={link.path}
+          key={index}
           to={link.path}
           className={`list-group-item bg-black text-center border-0
               ${

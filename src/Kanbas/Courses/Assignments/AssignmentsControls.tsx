@@ -1,45 +1,43 @@
-import { FaSearch } from "react-icons/fa";
-import { IoEllipsisVertical } from "react-icons/io5";
+import { FaPlus } from "react-icons/fa6";
+import { CiSearch } from "react-icons/ci";
 import { useSelector } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
 import { useParams } from "react-router";
+import ProtectedRouteRole from "../ProtectedRouteRole";
+
 export default function AssignmentsControls() {
   const { currentUser } = useSelector((state: any) => state.accountReducer);
-  const isFaculty = currentUser?.role === "FACULTY";
-  const navigate = useNavigate();
   const { cid } = useParams();
+
   return (
-    <div className="d-flex justify-content-between mb-4">
-      <div className="input-group w-50">
-        <span className="input-group-text bg-light">
-          <FaSearch />
-        </span>
+    <div id="wd-assignments-controls" className="text-nowrap">
+      <div className="search-bar me-2 mb-2 float-start d-flex align-items-center">
+        <CiSearch className="position-relative m-2 fs-4" />
         <input
-          type="text"
-          className="form-control"
           id="wd-search-assignment"
-          placeholder="Search for Assignment"
-        />
+          className="form-control border-0"
+          placeholder="Search..."
+        ></input>
       </div>
-      {isFaculty && (
-        <div>
-          <button className="btn wd-add-assignment-group btn-secondary me-2">
-            + Group
+      <div className="row float-end">
+        <ProtectedRouteRole>
+          <button
+            id="wd-add-assignment-group"
+            className="btn btn-lg btn-secondary mb-2 me-2 float-end col"
+          >
+            <FaPlus className="position-relative me-2" />
+            Group
           </button>
-          <div className="wd-button float-end">
-            <button
-              onClick={() => navigate(`/Kanbas/Courses/${cid}/Assignments/new`)}
-              className="btn wd-add-assignment btn-danger me-2"
-            >
-              + Assignment
-            </button>
-            <button className="btn wd-add-assignment-group btn-secondary ">
-              {" "}
-              <IoEllipsisVertical className="fs-4" />{" "}
-            </button>
-          </div>
-        </div>
-      )}
+        </ProtectedRouteRole>
+        {(currentUser.role === "FACULTY" || currentUser.role === "ADMIN") && (
+          <a
+            href={`#/Kanbas/Courses/${cid}/Assignments/New`}
+            className="btn btn-lg btn-danger  me-2 mb-2 float-end col text-nowrap"
+          >
+            <FaPlus className="position-relative me-2" />
+            Assignment
+          </a>
+        )}
+      </div>
     </div>
   );
 }

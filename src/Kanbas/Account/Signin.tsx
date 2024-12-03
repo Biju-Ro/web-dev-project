@@ -2,68 +2,77 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { setCurrentUser } from "./reducer";
 import { useDispatch } from "react-redux";
-import * as db from "../Database";
 import * as client from "./client";
 
 export default function Signin() {
-  const [credentials, setCredentials] = useState<any>({});
+  const [credentials, setCredentials] = useState({
+    username: "",
+    password: "",
+  });
+  const [error, setError] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const signin = async () => {
-    const user = await client.signin(credentials);
-    if (!user) return;
-    dispatch(setCurrentUser(user));
-    navigate("/Kanbas/Dashboard");
+    try {
+      const user = await client.signin(credentials);
+      if (!user) {
+        setError("Invalid username or password");
+        return;
+      }
+      dispatch(setCurrentUser(user));
+      navigate("/Kanbas/Dashboard");
+    } catch (error) {
+      console.error("Caught: ", error);
+      setError("Signin failed. Please try again.");
+    }
   };
 
   return (
-    <div id="wd-signin-screen" className="p-3">
-      <h1 className="text-center mb-4">Sign In</h1>
-      <div className="mb-3">
-        <label htmlFor="wd-username" className="form-label fw-semibold">
-          Username
-        </label>
+    <div
+      id="wd-signin-screen"
+      className="d-flex flex-column align-items-center justify-content-center vh-100"
+    >
+      <div className="card p-4 shadow-sm" style={{ width: "300px" }}>
+        <h3 className="text-center mb-4">Sign in</h3>
         <input
-          type="text"
-          value={credentials.username || ""}
+          id="wd-username"
+          placeholder="username"
+          className="form-control mb-2"
+          value={credentials.username}
           onChange={(e) =>
             setCredentials({ ...credentials, username: e.target.value })
           }
-          className="form-control"
-          placeholder="Enter your username"
-          id="wd-username"
         />
-      </div>
-      <div className="mb-3">
-        <label htmlFor="wd-password" className="form-label fw-semibold">
-          Password
-        </label>
         <input
+          id="wd-password"
+          placeholder="password"
           type="password"
-          value={credentials.password || ""}
+          className="form-control mb-2"
+          value={credentials.password}
           onChange={(e) =>
             setCredentials({ ...credentials, password: e.target.value })
           }
-          className="form-control"
-          placeholder="Enter your password"
-          id="wd-password"
         />
-      </div>
-      <button
-        onClick={signin}
-        id="wd-signin-btn"
-        className="btn btn-primary w-100 mb-3"
-      >
-        Sign In
-      </button>
-      <div className="text-center">
+        {error && (
+          <div className="alert alert-danger mb-2" role="alert">
+            {error}
+          </div>
+        )}
+        <button
+          id="wd-signin-btn"
+          className="btn btn-primary w-100 mb-2"
+          onClick={signin}
+          disabled={!credentials.username || !credentials.password}
+        >
+          Sign in
+        </button>
         <Link
           id="wd-signup-link"
           to="/Kanbas/Account/Signup"
-          className="text-decoration-none"
+          className="text-center"
         >
-          Don't have an account? <span className="fw-bold">Sign Up</span>
+          Sign up
         </Link>
       </div>
     </div>

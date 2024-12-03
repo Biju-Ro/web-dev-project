@@ -1,13 +1,9 @@
-export default function ModuleEditor({
-  dialogTitle,
-  moduleName,
-  setModuleName,
-  addModule,
+export default function DeleteAssignmentDialog({
+  assignmentId,
+  deleteAssignment,
 }: {
-  dialogTitle: string;
-  moduleName: string;
-  setModuleName: (name: string) => void;
-  addModule: () => void;
+  assignmentId: string;
+  deleteAssignment: (assignmentId: string) => void;
 }) {
   return (
     <div
@@ -20,21 +16,8 @@ export default function ModuleEditor({
         <div className="modal-content">
           <div className="modal-header">
             <h1 className="modal-title fs-5" id="staticBackdropLabel">
-              {dialogTitle}
+              Are you sure you want to remove this assignment?
             </h1>
-            <button
-              type="button"
-              className="btn-close"
-              data-bs-dismiss="modal"
-            ></button>
-          </div>
-          <div className="modal-body">
-            <input
-              className="form-control"
-              value={moduleName}
-              placeholder="Module Name"
-              onChange={(e) => setModuleName(e.target.value)}
-            />
           </div>
           <div className="modal-footer">
             <button
@@ -45,12 +28,12 @@ export default function ModuleEditor({
               Cancel
             </button>
             <button
-              onClick={addModule}
               type="button"
               data-bs-dismiss="modal"
               className="btn btn-danger"
+              onClick={(e) => deleteAssignment(assignmentId)}
             >
-              Add Module
+              Yes
             </button>
           </div>
         </div>

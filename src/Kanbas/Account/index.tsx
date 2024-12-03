@@ -4,7 +4,7 @@ import Profile from "./Profile";
 import Signin from "./Signin";
 import Signup from "./Signup";
 import { useSelector } from "react-redux";
-import ProtectedRoute from "./ProtectedRoute";
+
 import Users from "./Users";
 
 export default function Account() {
